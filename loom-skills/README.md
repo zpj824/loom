@@ -29,8 +29,6 @@ npx skills add OWNER/REPO -s loom-serve -s loom-schema
 npx skills add OWNER/REPO -s loom-serve
 ```
 
-Add `-g` to install globally (`~/.claude/skills/`) instead of the current project.
-
 ## Requirements
 
 - Node.js ≥ 18.
