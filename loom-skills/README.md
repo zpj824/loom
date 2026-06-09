@@ -22,11 +22,11 @@ Together they form a workflow: **author the schema files with `loom-schema`, the
 Using the [`skills` CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-# both skills  (replace OWNER/REPO with wherever you publish this)
-npx skills add OWNER/REPO -s loom-serve -s loom-schema
+# both skills  
+npx skills add https://github.com/zpj824/loom/tree/main/loom-skills -s loom-serve -s loom-schema
 
 # or just one
-npx skills add OWNER/REPO -s loom-serve
+npx skills add https://github.com/zpj824/loom/tree/main/loom-skills -s loom-serve
 ```
 
 ## Requirements
