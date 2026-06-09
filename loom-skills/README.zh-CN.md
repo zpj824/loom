@@ -20,14 +20,12 @@
 使用 [`skills` CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-# 同时装两个 (把 OWNER/REPO 换成你发布到的仓库)
-npx skills add OWNER/REPO -s loom-serve -s loom-schema
+# 同时装两个 
+npx skills add https://github.com/zpj824/loom/tree/main/loom-skills -s loom-serve -s loom-schema
 
 # 或只装一个
-npx skills add OWNER/REPO -s loom-serve
+npx skills add https://github.com/zpj824/loom/tree/main/loom-skills -s loom-serve
 ```
-
-加 `-g` 可装到全局(`~/.claude/skills/`)而非当前项目。
 
 ## 环境要求
 
