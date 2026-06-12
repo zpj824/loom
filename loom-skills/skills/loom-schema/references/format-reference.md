@@ -35,6 +35,22 @@ precise field semantics.
 Each `request.*` value and each `response[code]` value is a normal draft-07
 schema, typically `{ "type": "object", "properties": {...}, "required": [...] }`.
 
+> **Critical:** the viewer lists parameters from the node's `properties`. A
+> `body`/`query`/`params`/`headers` (or response) without `type: "object"` +
+> `properties` renders an **empty** parameter table. This is the usual cause of
+> "POST/PUT request params don't show up."
+
+**Do NOT carry over OpenAPI/Swagger structure.** Loom has no `requestBody`, no
+`content`/media types, and no `parameters` array. Translate:
+
+| ❌ OpenAPI (won't render) | ✅ Loom |
+|---|---|
+| `requestBody.content."application/json".schema` | `request.body` (a `{type:object, properties, required}` schema) |
+| `parameters: [{in:"query", name, schema}]` | `request.query.properties.<name>` |
+| `parameters: [{in:"path", name, schema}]` | `request.params.properties.<name>` |
+| `parameters: [{in:"header", name, schema}]` | `request.headers.properties.<name>` |
+| `body: { "email": {…} }` (bare fields) | `body: { "type":"object", "properties": { "email": {…} } }` |
+
 ### Status codes
 
 - Always provide at least one success code (`200` or `201`).

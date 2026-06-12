@@ -111,6 +111,36 @@ You do **not** need the `loom` CLI, an LLM, or an API key to author — you just
 - Put `body` on POST/PUT/PATCH, `query` on GET filters/pagination, `params` for every `:param` in the path (the param name must match a property in `request.params`).
 - Each `request.*` and each `response[code]` value is a standard draft-07 schema with `type`, `properties`, `required`, etc.
 
+## Request body & parameters (read this — most common mistake)
+
+**Every** `request` part — `body`, `query`, `params`, `headers` — and every response **must be an object schema whose fields live under `properties`**. The viewer reads the parameter list from `properties`; if `type: "object"` + `properties` are missing, the parameter table renders **empty**. This is the #1 reason a POST/PUT body shows no fields.
+
+Correct shape for a POST/PUT/PATCH body:
+
+```json
+"request": {
+  "body": {
+    "type": "object",
+    "properties": {
+      "email":    { "type": "string", "format": "email", "description": "User email" },
+      "password": { "type": "string", "minLength": 8, "description": "Min 8 chars" }
+    },
+    "required": ["email", "password"]
+  }
+}
+```
+
+**Do NOT use OpenAPI/Swagger shapes** — a very common slip when translating from an OpenAPI spec. Loom has **no** `requestBody`, **no** `content`/media types, and **no** `parameters` array. Convert them:
+
+| ❌ OpenAPI shape (won't render) | ✅ Loom shape |
+|---|---|
+| `"requestBody": { "content": { "application/json": { "schema": {…} } } }` | `"request": { "body": { "type":"object", "properties":{…}, "required":[…] } }` |
+| `"parameters": [ { "in":"query", "name":"page", "schema":{…} } ]` | `"request": { "query": { "type":"object", "properties": { "page": {…} } } }` |
+| `"parameters": [ { "in":"path", "name":"id", "schema":{…} } ]` | `"request": { "params": { "type":"object", "properties": { "id": {…} } } }` |
+| bare fields: `"body": { "email": {…}, "password": {…} }` | wrap them: `"body": { "type":"object", "properties": { "email": {…}, "password": {…} }, "required":[…] }` |
+
+Same rule applies to `query`, `params`, `headers`, and every `response[code]`: always the `{ "type": "object", "properties": { … }, "required": [ … ] }` envelope.
+
 ## JSON Schema conventions (the property nodes)
 
 Use JSON Schema **draft-07**. Per property, include `type` plus a `description` and any constraints:
