@@ -48,6 +48,53 @@ On startup it logs:
 [info]   Serving docs from: /path/to/project/docs
 ```
 
+## Online publishing
+
+Loom can also publish the same `docs/` package to the hosted Loom Server. Use this when the user wants a shareable online documentation URL instead of only a local preview/mock server.
+
+Default hosted endpoint:
+
+```
+https://loom-server.vegamo.cn
+```
+
+The CLI auto-creates a stable publish token on first use and stores only that token in `~/.loom/auth.json`. The server URL is built into Loom; `--server <baseUrl>` is only a temporary per-command override and must not be written to global config.
+
+Two equivalent entry styles are supported:
+
+```bash
+# Outer CLI commands
+npx @vegamo/loom plans
+npx @vegamo/loom purchase basic_annual
+npx @vegamo/loom publish --dir /path/to/project
+```
+
+```text
+# Inside `loom chat`
+/plans
+/purchase basic_annual
+/publish
+```
+
+Publishing creates or reuses `<project>/.loom/project.json`, which pins the stable `projectSlug` for that local docs project. Reusing the same `projectSlug` updates the same hosted project; changing it is treated as a new hosted project and may require another `basic_annual` slot unless the token has active `pro_annual`.
+
+Use:
+
+- `plans` / `/plans` to show available plans plus current pro/slot/project entitlement.
+- `purchase basic_annual` / `/purchase basic_annual` to buy one annual project slot.
+- `purchase pro_annual` / `/purchase pro_annual` to buy unlimited annual projects.
+- `publish` / `/publish` to upload the current docs bundle; if there is no pro entitlement and no available slot for a new project, Loom should stop and guide the user to purchase first.
+
+Common publish options:
+
+```bash
+npx @vegamo/loom publish \
+  --dir /path/to/project \
+  --project my-api \
+  --name "My API" \
+  --visibility public
+```
+
 ## What it exposes (one port)
 
 | Path | What |
