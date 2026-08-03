@@ -1,23 +1,23 @@
 ---
-name: loom-schema
-description: Author Loom API documentation by hand-writing JSON Schema files (docs/*.schema.json and docs/entities/*.entity.schema.json). Use when you need to produce API contract/spec files in Loom's format — by translating requirements, an existing API, source code, or an OpenAPI/Swagger spec — so they can then be browsed and mocked with the `loom-serve` skill. No LLM or API key needed; you write the JSON directly.
+name: sdd-helper-schema
+description: Author sdd-helper API documentation by hand-writing JSON Schema files (docs/*.schema.json and docs/entities/*.entity.schema.json). Use when you need to produce API contract/spec files in sdd-helper's format — by translating requirements, an existing API, source code, or an OpenAPI/Swagger spec — so they can then be browsed and mocked with the `sdd-helper-serve` skill. No LLM or API key needed; you write the JSON directly.
 ---
 
-# loom-schema — authoring Loom schema files
+# sdd-helper-schema — authoring sdd-helper schema files
 
-Loom renders a web doc viewer and a mock API server from plain JSON files on disk. This skill tells you the **exact file format** so you can generate those files yourself, then hand them to the **`loom-serve`** skill (which runs `loom serve`) for viewing and mocking.
+sdd-helper renders a web doc viewer and a mock API server from plain JSON files on disk. This skill tells you the **exact file format** so you can generate those files yourself, then hand them to the **`sdd-helper-serve`** skill (which runs `sdd-helper serve`) for viewing and mocking.
 
-You do **not** need the `loom` CLI, an LLM, or an API key to author — you just write JSON files that follow the format below. (`loom serve` reads the files directly; there is no build/index step required.)
+You do **not** need the `sdd-helper` CLI, an LLM, or an API key to author — you just write JSON files that follow the format below. (`sdd-helper serve` reads the files directly; there is no build/index step required.)
 
 ## Workflow
 
 1. Create the docs directory in the target project (default: `<project>/docs/`).
 2. Write one `*.schema.json` file per group of related endpoints (e.g. all user APIs → `docs/users.schema.json`).
 3. (Optional) Extract reusable objects into `docs/entities/*.entity.schema.json` and reference them with `x-entity-ref`.
-4. Hand off to the **`loom-serve` skill** to start the viewer + mock server:
-   `npx @vegamo/loom serve --port 3000 --dir <project>` (run it backgrounded — see the `loom-serve` skill).
+4. Hand off to the **`sdd-helper-serve` skill** to start the viewer + mock server:
+   `npx @vegamo/sdd-helper serve --port 3000 --dir <project>` (run it backgrounded — see the `sdd-helper-serve` skill).
 
-`loom serve` picks up the files immediately. There is **no manifest/build step** required. (`npx @vegamo/loom manifest rebuild` only builds an optional cross-reference index; the viewer and mock work without it.)
+`sdd-helper serve` picks up the files immediately. There is **no manifest/build step** required. (`npx @vegamo/sdd-helper manifest rebuild` only builds an optional cross-reference index; the viewer and mock work without it.)
 
 ## File layout
 
@@ -130,9 +130,9 @@ Correct shape for a POST/PUT/PATCH body:
 }
 ```
 
-**Do NOT use OpenAPI/Swagger shapes** — a very common slip when translating from an OpenAPI spec. Loom has **no** `requestBody`, **no** `content`/media types, and **no** `parameters` array. Convert them:
+**Do NOT use OpenAPI/Swagger shapes** — a very common slip when translating from an OpenAPI spec. sdd-helper has **no** `requestBody`, **no** `content`/media types, and **no** `parameters` array. Convert them:
 
-| ❌ OpenAPI shape (won't render) | ✅ Loom shape |
+| ❌ OpenAPI shape (won't render) | ✅ sdd-helper shape |
 |---|---|
 | `"requestBody": { "content": { "application/json": { "schema": {…} } } }` | `"request": { "body": { "type":"object", "properties":{…}, "required":[…] } }` |
 | `"parameters": [ { "in":"query", "name":"page", "schema":{…} } ]` | `"request": { "query": { "type":"object", "properties": { "page": {…} } } }` |
@@ -160,7 +160,7 @@ If the same object appears in many endpoints, define it once as an entity and re
 - Entity file `docs/entities/user.entity.schema.json` whose `title` is the entity name (`"User"`).
 - In an endpoint schema node: `"x-entity-ref": "User"` (inline whole entity), or
   `"x-entity-ref": { "entity": "User", "pick": ["id", "name"] }`.
-- Entities are resolved by `loom serve` at view/mock time; you keep the raw `x-entity-ref` in your files.
+- Entities are resolved by `sdd-helper serve` at view/mock time; you keep the raw `x-entity-ref` in your files.
 
 ## Rules of thumb
 
@@ -169,7 +169,7 @@ If the same object appears in many endpoints, define it once as an entity and re
 3. Every endpoint needs `path`, `method`, `summary`, and a `response` with at least one success code.
 4. Every `:param` in a path must appear in `request.params.properties`.
 5. Write valid JSON (no comments, no trailing commas).
-6. When done, use the **`loom-serve`** skill to serve: viewer at `/`, mock API under `/mock/*`.
+6. When done, use the **`sdd-helper-serve`** skill to serve: viewer at `/`, mock API under `/mock/*`.
 
 ## Full reference
 

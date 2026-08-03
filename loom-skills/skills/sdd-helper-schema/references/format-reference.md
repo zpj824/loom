@@ -1,6 +1,6 @@
-# Loom schema format — full reference
+# sdd-helper schema format — full reference
 
-This is the exhaustive reference for hand-authoring Loom schema files. The
+This is the exhaustive reference for hand-authoring sdd-helper schema files. The
 SKILL.md covers the common case; read this when you need entity references or
 precise field semantics.
 
@@ -40,10 +40,10 @@ schema, typically `{ "type": "object", "properties": {...}, "required": [...] }`
 > `properties` renders an **empty** parameter table. This is the usual cause of
 > "POST/PUT request params don't show up."
 
-**Do NOT carry over OpenAPI/Swagger structure.** Loom has no `requestBody`, no
+**Do NOT carry over OpenAPI/Swagger structure.** sdd-helper has no `requestBody`, no
 `content`/media types, and no `parameters` array. Translate:
 
-| ❌ OpenAPI (won't render) | ✅ Loom |
+| ❌ OpenAPI (won't render) | ✅ sdd-helper |
 |---|---|
 | `requestBody.content."application/json".schema` | `request.body` (a `{type:object, properties, required}` schema) |
 | `parameters: [{in:"query", name, schema}]` | `request.query.properties.<name>` |
@@ -108,7 +108,7 @@ reference.
 ## 4. `x-entity-ref` — referencing an entity
 
 Place `x-entity-ref` on any schema node inside an endpoint's `request.*` or
-`response[code]`. It is resolved by `loom serve` at view/mock time; your file
+`response[code]`. It is resolved by `sdd-helper serve` at view/mock time; your file
 keeps the `x-entity-ref` as written.
 
 ### String form — inline the whole entity
@@ -159,7 +159,7 @@ Alongside `x-entity-ref` you may set keys that override the resolved entity:
 
 ### Resolution failures
 
-If an entity is missing or the ref is malformed, `loom serve` does not crash —
+If an entity is missing or the ref is malformed, `sdd-helper serve` does not crash —
 it renders a fallback node carrying `x-entity-ref-error` and lists the issue
 under `entityResolveIssues`. So broken refs are visible but non-fatal; still,
 make sure every referenced entity file exists.
@@ -259,7 +259,7 @@ make sure every referenced entity file exists.
 }
 ```
 
-## 6. Checklist before handing off to `loom serve`
+## 6. Checklist before handing off to `sdd-helper serve`
 
 - [ ] Files end with `.schema.json` (endpoints) / `.entity.schema.json` (entities under `docs/entities/`).
 - [ ] Valid JSON: no comments, no trailing commas.
